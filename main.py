@@ -1,6 +1,7 @@
 import os
 import requests
 from dotenv import load_dotenv
+from pprint import pprint as pp
 
 
 load_dotenv()
@@ -9,9 +10,9 @@ CLIENT_ID = os.environ.get("CLIENT_ID")
 SECRET_ID = os.environ.get("SECRET_ID")
 
 BASE_URL = 'https://api.sase.paloaltonetworks.com/sse/config/v1'
-# HEADERS = {
-#   'Accept': 'application/json',
-# }
+HEADERS = {
+  'Accept': 'application/json',
+}
 
 
 def create_token():
@@ -24,19 +25,14 @@ def create_token():
         token = requests.request(
             "POST", url, headers=headers, auth=(CLIENT_ID, SECRET_ID)
         ).json()
-        return token["access_token"]
+        return HEADERS.update({'Authorization': f'Bearer {token["access_token"]}'})
     except Exception as e:
         print(e)
 
 def get_security_rules():
     url = f"{BASE_URL}/security-rules?position=pre&folder=Mobile%20Users"
-    HEADERS =   {
-        'Accept': 'application/json',
-        'Authorization': f'Bearer {token}'
-    }
-
     response = requests.get(url, headers=HEADERS).json()
-    print(response)
+    pp(response)
 
 
 if __name__ == "__main__":
