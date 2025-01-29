@@ -9,7 +9,7 @@ TSG_ID = os.environ.get("TSG_ID")
 CLIENT_ID = os.environ.get("CLIENT_ID")
 SECRET_ID = os.environ.get("SECRET_ID")
 
-BASE_URL = 'https://api.sase.paloaltonetworks.com/sse/config/v1'
+BASE_URL = "https://api.sase.paloaltonetworks.com/sse/config/v1"
 
 AUTH_HEADERS = {
     "Content-Type": "application/x-www-form-urlencoded",
@@ -17,7 +17,7 @@ AUTH_HEADERS = {
 }
 
 HEADERS = {
-  'Accept': 'application/json',
+    "Accept": "application/json",
 }
 
 
@@ -27,9 +27,10 @@ def create_token():
         token = requests.request(
             "POST", url, headers=AUTH_HEADERS, auth=(CLIENT_ID, SECRET_ID)
         ).json()
-        return HEADERS.update({'Authorization': f'Bearer {token["access_token"]}'})
+        return HEADERS.update({"Authorization": f'Bearer {token["access_token"]}'})
     except Exception as e:
         print(e)
+
 
 def get_security_rules():
     url = f"{BASE_URL}/security-rules?position=pre&folder=Mobile%20Users"
