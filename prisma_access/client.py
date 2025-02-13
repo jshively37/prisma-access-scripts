@@ -100,3 +100,25 @@ class PrismaAccess:
                     )
                     all_rules_list.append(rule_dict)
         return all_rules_list
+
+    def get_single_security_rule(self, folder: str, position: str = "pre"):
+        """Retrieve rules for only folder and position in Prisma Access
+
+        Args:
+            folder (str): Folder to target
+            position (str, optional): Location of the rule. Defaults to "pre".
+
+        Returns:
+            _type_: A dictionary containing the folder, position, and security rule data.
+        """
+        rule_dict = {}
+        endpoint = f"/{ENDPOINTS['security_rules']}?position={position}&folder={folder}"
+        response = self.make_request(endpoint=endpoint)
+        rule_dict.update(
+            {
+                "folder": folder,
+                "position": position,
+                "security_rules": response["data"],
+            }
+        )
+        return rule_dict
