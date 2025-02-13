@@ -89,9 +89,7 @@ class PrismaAccess:
             else:
                 for position in POSITIONS:
                     rule_dict = {}
-                    endpoint = (
-                        f"/{ENDPOINTS['security_rules']}?position={position}&folder={folder}"
-                    )
+                    endpoint = f"/{ENDPOINTS['security_rules']}?position={position}&folder={folder}"
                     response = self.make_request(endpoint=endpoint)
                     rule_dict.update(
                         {
