@@ -57,12 +57,12 @@ class PrismaAccess:
             print(e)
 
     def make_request(
-        self, url: str, headers: str = HEADERS, method: str = "GET", data: str = ""
+        self, endpoint: str, headers: str = HEADERS, method: str = "GET", data: str = ""
     ):
         """Function that is used for making API requests.
 
         Args:
-            url (str): URL to target
+            endpoint (str): Path to target against. Will be combined with BASE_URL to form full URL
             headers (str, optional): Headers to use. Defaults to HEADERS.
             method (str, optional): HTTP Verb. Defaults to "GET".
             data (str, optional): Payload. Defaults to "".
@@ -70,6 +70,7 @@ class PrismaAccess:
         Returns:
             JSON: returns the output from the URL request
         """
+        url = BASE_URL + endpoint
         return requests.request(
             method=method, url=url, headers=HEADERS, data=data
         ).json()
@@ -82,16 +83,16 @@ class PrismaAccess:
         """
         all_rules_list = []
         for folder in FOLDERS:
-            rule_dict = {}
             # Skip service connections because we don't do security processing on those nodes.
             if folder == "Service Connections":
                 pass
             else:
                 for position in POSITIONS:
-                    url = (
-                        f"{BASE_URL}/security-rules?position={position}&folder={folder}"
+                    rule_dict = {}
+                    endpoint = (
+                        f"/{ENDPOINTS['security_rules']}?position={position}&folder={folder}"
                     )
-                    response = self.make_request(url=url)
+                    response = self.make_request(endpoint=endpoint)
                     rule_dict.update(
                         {
                             "folder": folder,
