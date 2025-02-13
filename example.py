@@ -14,4 +14,5 @@ if __name__ == "__main__":
     client = PrismaAccess(tsg_id=TSG_ID, client_id=CLIENT_ID, secret_id=SECRET_ID)
     client.create_token()
     resp = client.get_all_security_rules()
-    print(resp)
+    for x in resp:
+        pp(x)
