@@ -13,6 +13,9 @@ SECRET_ID = os.environ.get("SECRET_ID")
 if __name__ == "__main__":
     client = PrismaAccess(tsg_id=TSG_ID, client_id=CLIENT_ID, secret_id=SECRET_ID)
     client.create_token()
-    resp = client.get_all_security_rules()
-    for x in resp:
-        pp(x)
+    all_rules = client.get_all_security_rules()
+    pp(all_rules)
+    print("*" * 50)
+    print("*" * 50)
+    single_rule = client.get_single_security_rule(folder="Mobile Users", position="pre")
+    pp(single_rule)
