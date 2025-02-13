@@ -41,8 +41,7 @@ class PrismaAccess:
         self.secret_id = secret_id
 
     def create_token(self):
-        """Function that handles authenticating to Prisma Access and retrieving the token.
-        """
+        """Function that handles authenticating to Prisma Access and retrieving the token."""
         auth_url = (
             f"{BASE_AUTH_URL}?grant_type=client_credentials&scope:tsg_id:{self.tsg_id}"
         )
