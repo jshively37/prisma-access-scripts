@@ -19,3 +19,7 @@ if __name__ == "__main__":
     print("*" * 50)
     single_rule = client.get_single_security_rule(folder="Mobile Users", position="pre")
     pp(single_rule)
+    print("*" * 50)
+    print("*" * 50)
+    all_decrypt_rules = client.get_all_decryption_rules()
+    pp(all_decrypt_rules)

@@ -4,7 +4,7 @@ import typing as t
 BASE_AUTH_URL = "https://auth.apps.paloaltonetworks.com/auth/v1/oauth2/access_token"
 BASE_URL = "https://api.sase.paloaltonetworks.com/sse/config/v1"
 
-ENDPOINTS = {"security_rules": "/security-rules"}
+ENDPOINTS = {"security_rules": "/security-rules", "decryption": "/decryption-rules"}
 
 HEADERS = {
     "Accept": "application/json",
@@ -122,3 +122,24 @@ class PrismaAccess:
             }
         )
         return rule_dict
+
+    def get_all_decryption_rules(self):
+        all_decrypt_rules = []
+        for folder in FOLDERS:
+            # Skip service connections because we don't do security processing on those nodes.
+            if folder == "Service Connections":
+                pass
+            else:
+                for position in POSITIONS:
+                    rule_dict = {}
+                    endpoint = f"/{ENDPOINTS['decryption']}?position={position}&folder={folder}"
+                    response = self.make_request(endpoint=endpoint)
+                    rule_dict.update(
+                        {
+                            "folder": folder,
+                            "position": position,
+                            "decryption": response["data"],
+                        }
+                    )
+                    all_decrypt_rules.append(rule_dict)
+        return all_decrypt_rules
