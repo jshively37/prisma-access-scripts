@@ -90,23 +90,20 @@ class PrismaAccess:
         Returns:
             _type_: List of dictionaries
         """
-        list_to_return = []
+        list_of_dicts = []
         for folder in FOLDERS:
             if folder != "Service Connections":
                 for position in POSITIONS:
                     _ = {}
                     full_endpoint = f"{endpoint}?position={position}&folder={folder}"
-                    print(full_endpoint)
-                    print(folder, position)
                     response = self._make_request(endpoint=full_endpoint)
-                    print(response)
                     _ |= {
                         "folder": folder,
                         "position": position,
                         f"{request_type}": response["data"],
                     }
-                    list_to_return.append(_)
-        return list_to_return
+                    list_of_dicts.append(_)
+        return list_of_dicts
 
     def get_all_security_rules(self):
         """Retrieve all security rules from all folders and positions.
