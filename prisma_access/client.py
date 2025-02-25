@@ -78,7 +78,7 @@ class PrismaAccess:
             method=method, url=url, headers=HEADERS, data=data
         ).json()
 
-    def _loop_all_folders(self, endpoint, request_type):
+    def _loop_all_folders_positions(self, endpoint, request_type):
         """Function that will loop all folders and positions and returns a list of dictionaries
 
         Args:
@@ -100,7 +100,7 @@ class PrismaAccess:
                     _ |= {
                         "folder": folder,
                         "position": position,
-                        f"{request_type}": response["data"],
+                        request_type: response["data"],
                     }
                     list_of_dicts.append(_)
         return list_of_dicts
@@ -111,7 +111,7 @@ class PrismaAccess:
         Returns:
             Dict: List of dictionaries containing the data, folder, and position.
         """
-        return self._loop_all_folders(
+        return self._loop_all_folders_positions(
             endpoint=ENDPOINTS["security_rules"],
             request_type=REQUEST_TYPES["security_rules"],
         )
@@ -122,7 +122,7 @@ class PrismaAccess:
         Returns:
             Dict: List of dictionaries containing the data, folder, and position.
         """
-        return self._loop_all_folders(
+        return self._loop_all_folders_positions(
             endpoint=ENDPOINTS["decryption"], request_type=REQUEST_TYPES["decryption"]
         )
 
