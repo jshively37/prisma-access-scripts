@@ -1,5 +1,6 @@
 import requests
-import typing as t
+
+# import typing as t
 
 BASE_AUTH_URL = "https://auth.apps.paloaltonetworks.com/auth/v1/oauth2/access_token"
 BASE_URL = "https://api.sase.paloaltonetworks.com/sse/config/v1"
@@ -25,6 +26,8 @@ FOLDERS = [
 ]
 
 POSITIONS = ["pre", "post"]
+
+REQUEST_TYPES = {"security_rules": "security_rules", "decryption": "decryption"}
 
 
 class PrismaAccess:
@@ -56,7 +59,7 @@ class PrismaAccess:
         except Exception as e:
             print(e)
 
-    def make_request(
+    def _make_request(
         self, endpoint: str, headers: str = HEADERS, method: str = "GET", data: str = ""
     ):
         """Function that is used for making API requests.
@@ -75,31 +78,53 @@ class PrismaAccess:
             method=method, url=url, headers=HEADERS, data=data
         ).json()
 
+    def _loop_all_folders_positions(self, endpoint, request_type):
+        """Function that will loop all folders and positions and returns a list of dictionaries
+
+        Args:
+            endpoint str: Endpoint to target from the ENDPOINTS dictionary
+            request_type str: Type of request to target from REQUEST_TYPES dictionary. This
+                            builds the value that will be passed to the dictionary for the
+                            data that was returned from the response.
+
+        Returns:
+            _type_: List of dictionaries
+        """
+        list_of_dicts = []
+        for folder in FOLDERS:
+            if folder != "Service Connections":
+                for position in POSITIONS:
+                    _ = {}
+                    full_endpoint = f"{endpoint}?position={position}&folder={folder}"
+                    response = self._make_request(endpoint=full_endpoint)
+                    _ |= {
+                        "folder": folder,
+                        "position": position,
+                        request_type: response["data"],
+                    }
+                    list_of_dicts.append(_)
+        return list_of_dicts
+
     def get_all_security_rules(self):
         """Retrieve all security rules from all folders and positions.
 
         Returns:
             Dict: List of dictionaries containing the data, folder, and position.
         """
-        all_rules_list = []
-        for folder in FOLDERS:
-            # Skip service connections because we don't do security processing on those nodes.
-            if folder == "Service Connections":
-                pass
-            else:
-                for position in POSITIONS:
-                    rule_dict = {}
-                    endpoint = f"/{ENDPOINTS['security_rules']}?position={position}&folder={folder}"
-                    response = self.make_request(endpoint=endpoint)
-                    rule_dict.update(
-                        {
-                            "folder": folder,
-                            "position": position,
-                            "security_rules": response["data"],
-                        }
-                    )
-                    all_rules_list.append(rule_dict)
-        return all_rules_list
+        return self._loop_all_folders_positions(
+            endpoint=ENDPOINTS["security_rules"],
+            request_type=REQUEST_TYPES["security_rules"],
+        )
+
+    def get_all_decryption_rules(self):
+        """Retrieve all decryption rules from all folders and positions.
+
+        Returns:
+            Dict: List of dictionaries containing the data, folder, and position.
+        """
+        return self._loop_all_folders_positions(
+            endpoint=ENDPOINTS["decryption"], request_type=REQUEST_TYPES["decryption"]
+        )
 
     def get_single_security_rule(self, folder: str, position: str = "pre"):
         """Retrieve rules for only folder and position in Prisma Access
@@ -113,33 +138,10 @@ class PrismaAccess:
         """
         rule_dict = {}
         endpoint = f"/{ENDPOINTS['security_rules']}?position={position}&folder={folder}"
-        response = self.make_request(endpoint=endpoint)
-        rule_dict.update(
-            {
-                "folder": folder,
-                "position": position,
-                "security_rules": response["data"],
-            }
-        )
+        response = self._make_request(endpoint=endpoint)
+        rule_dict |= {
+            "folder": folder,
+            "position": position,
+            "security_rules": response["data"],
+        }
         return rule_dict
-
-    def get_all_decryption_rules(self):
-        all_decrypt_rules = []
-        for folder in FOLDERS:
-            # Skip service connections because we don't do security processing on those nodes.
-            if folder == "Service Connections":
-                pass
-            else:
-                for position in POSITIONS:
-                    rule_dict = {}
-                    endpoint = f"/{ENDPOINTS['decryption']}?position={position}&folder={folder}"
-                    response = self.make_request(endpoint=endpoint)
-                    rule_dict.update(
-                        {
-                            "folder": folder,
-                            "position": position,
-                            "decryption": response["data"],
-                        }
-                    )
-                    all_decrypt_rules.append(rule_dict)
-        return all_decrypt_rules
