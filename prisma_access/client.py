@@ -1,11 +1,14 @@
 import requests
-
-# import typing as t
+import yaml
 
 BASE_AUTH_URL = "https://auth.apps.paloaltonetworks.com/auth/v1/oauth2/access_token"
 BASE_URL = "https://api.sase.paloaltonetworks.com/sse/config/v1"
 
-ENDPOINTS = {"security_rules": "/security-rules", "decryption": "/decryption-rules"}
+
+ENDPOINTS = {
+    "security_rules": "/security-rules",
+    "decryption": "/decryption-rules",
+    "addresses": "/addresses"}
 
 HEADERS = {
     "Accept": "application/json",
@@ -27,8 +30,15 @@ FOLDERS = [
 
 POSITIONS = ["pre", "post"]
 
-REQUEST_TYPES = {"security_rules": "security_rules", "decryption": "decryption"}
+REQUEST_TYPES = {
+    "security_rules": "security_rules",
+    "decryption": "decryption",
+    "addresses": "addresses"
+    }
 
+CONFIG_FILES = {
+    "adem": "config_files/adem.yaml"
+}
 
 class PrismaAccess:
     def __init__(self, tsg_id: str, client_id: str, secret_id: str):
@@ -145,3 +155,18 @@ class PrismaAccess:
             "security_rules": response["data"],
         }
         return rule_dict
+
+    def get_all_address_objects(self):
+        return self._loop_all_folders_positions(
+            endpoint=ENDPOINTS["addresses"], request_type=REQUEST_TYPES["addresses"]
+        )
+
+    def configure_adem(self):
+        adem_endpoints = self._read_adem_config()
+        for endpoint in adem_endpoints:
+            print(endpoint)
+
+    def _read_adem_config(self):
+        with open(CONFIG_FILES['adem'], 'r') as f:
+            adem_endpoints = yaml.safe_load(f)
+            return adem_endpoints['adem_endpoints']

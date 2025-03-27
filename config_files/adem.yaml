@@ -1,0 +1,15 @@
+adem_endpoints:
+  - agents.dem.prismaaccess.com
+  - updates.dem.prismaaccess.com
+  - features.dem.prismaaccess.com
+  - agents-prod1-us-west2.dem.prismaaccess.com
+  - agents-sg1-asia-southeast1.dem.prismaaccess.com
+  - agents-au1-australia-southeast1.dem.prismaaccess.com
+  - agents-jp1-asia-northeast1.dem.prismaaccess.com
+  - agents-ca1-northamerica-northeast1.dem.prismaaccess.com
+  - agents-eu1-europe-west4.dem.prismaaccess.com
+  - agents-uk1-europe-west2.dem.prismaaccess.com
+  - agents-in1-asia-south1.dem.prismaaccess.com
+  - agents-de1-europe-west3.dem.prismaaccess.com
+  - agents-ch1-europe-west6.dem.prismaaccess.com
+  - agents-fr1-europe-west9.dem.prismaaccess.com
