@@ -23,4 +23,6 @@ if __name__ == "__main__":
     # print("*" * 50)
     # all_decrypt_rules = client.get_all_decryption_rules()
     # pp(all_decrypt_rules)
-    client.configure_adem()
+    # client.configure_adem()
+    all_address_objects = client.get_all_address_objects()
+    print(all_address_objects)
